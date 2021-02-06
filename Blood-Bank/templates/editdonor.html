@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% block content %}
+
+<center>
+
+    <br>
+    <br>
+
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Predict If Eliggible for donation
+    </button>
+
+    <br>
+    <br>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+
+                {%for row in rows%}
+
+                <h5 class="modal-title" id="exampleModalCenterTitle">Predict if: {{row['donorname']}} can donate </h5>
+
+                <div class="modal-body">
+                    <form class="form-group" action="{{ url_for('predict',id=row['id'])}}" method="POST">
+                        <label for="recency"> When last donated(in months 0,1,2 etc):</label>
+
+                        <input class="form-control mr-sm-2" type="text" name="recency" value="{{row['lastdonation']}}" placeholder="When last donated(in months 0,1,2 etc)" aria-label="Search" required><br>
+                        <label for="frequency"> frequency:</label>
+
+                        <input class="form-control mr-sm-2" type="text" name="frequency" value="{{row['frequency']}}" placeholder=" Frequency - total number of donation)" aria-label="Search" required><br>
+
+                        <label for="frequency"> Total blood donated:</label>
+
+
+                        <input class="form-control mr-sm-2" type="search" name="total" value="{{row['totaldonation']}}" placeholder="Total blood donated in c.c" aria-label="Search" required><br>
+                        <label for="frequency"> Months since the first donation:</label>
+
+                        <input class="form-control mr-sm-2" type="search" name="time" value="{{row['monthssincefirst']}}" placeholder="Time - months since the first donation(in months)" aria-label="Search" required><br>
+
+
+                        <button type="button" class="btn btn-secondary mt-1" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary mt-1">Predict</button>
+                    </form>
+
+
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card text-left" style="width: 35rem;">
+        <div class="card-body">
+            <div class="card">
+                <h3>{{ prediction_text }}</h3>
+
+
+            </div>
+
+        </div>
+
+        <button class="btn btn-info" onclick="myFunction()">Proceed to donation</button>
+        <br>
+        <a class="btn btn-info" href="{{url_for('dashboard')}}">Go Back</a>
+
+    </div>
+
+
+</center>
+
+</button> {%for row in rows%}
+<center>
+    <div class="card text-left mt-5" id="myDIV" style="display: none;width: 35rem;">
+        <div class="card-body">
+            <form action="{{url_for('editdonor',id=row['id'])}}" method="POST">
+                <h3>Donor Information</h3>
+                BLOOD Group<br>
+
+                <select name="blood_group" class="form-control">
+            <option value="O+" selected>O+</option>
+           <option value="O-">O-</option>
+           <option value="A+">A+</option>
+           <option value="A-">A-</option>
+           <option value="B+">B+</option>
+           <option value="B-">B-</option>
+           <option value="AB+">AB+</option>
+           <option value="AB-">AB-</option>
+         </select>
+
+                <label for="name">Name</label>
+                <input type="text" name="donorname" class="form-control" value="{{row['donorname']}}" required/><br>
+
+                <label for="gender">gender</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="exampleRadios1" value="male" checked>
+                    <label class="form-check-label" for="exampleRadios1">
+    Male
+  </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="exampleRadios2" value="female">
+                    <label class="form-check-label" for="exampleRadios2">
+    Female
+  </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="exampleRadios2" value="other">
+                    <label class="form-check-label" for="exampleRadios2">
+    Other
+  </label>
+                </div>
+
+                <label for="qty">qty</label>
+
+                <input type="text" name="totaldonation" value="{{qtty}}" class="form-control" required hidden/><br>
+
+                <input type="text" name="frequency" value="{{freq}}" class="form-control" required hidden/><br>
+
+                <input type="text" name="qty" class="form-control" value="{{row['qty']}}" required/><br>
+                <label for="dweight">donor weight</label>
+
+                <input type="text" name="dweight" class="form-control" value="{{row['dweight']}}" required/><br>
+
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" value="{{row['donoremail']}}" required/><br>
+
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{row['phone']}}" required/><br>
+                <input type="submit" value="submit" class="btn btn-primary" /><br>
+
+            </form>
+        </div>
+    </div>
+</center>
+
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("myDIV");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
+
+{%endfor%} {% endblock %}
